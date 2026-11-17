@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#101a30" />
+    <title>Psycho Hero</title>
+    <link rel="stylesheet" href="./style.css" />
+    <!-- Poki SDK v2: src/poki.js wraps it. -->
+    <script src="https://game-cdn.poki.com/scripts/v2/poki-sdk.js"></script>
+  </head>
+  <body class="sandbox">
+    <main class="stage-wrap">
+      <div class="stage-frame"><div id="game" aria-label="Tiny planet free roam"></div></div>
+      <div class="hud-left">
+        <section class="hud-panel hero-hud" aria-label="Hero status">
+          <div class="hero-portrait" aria-hidden="true">
+            <svg viewBox="0 0 16 16" shape-rendering="crispEdges">
+              <path fill="#292438" d="M4 2h8v3H4zM3 3h2v5H3zM1 4h3v2H1zM0 5h2v2H0zM5 4h7v2H5z"/>
+              <path fill="#f5b28b" d="M5 6h7v4H5zM7 10h3v1H7z"/>
+              <path fill="#1d2339" d="M7 7h1v1H7zM10 7h1v1h-1z"/>
+              <path fill="#c77f62" d="M8 9h2v1H8z"/>
+              <path fill="#6b3fb8" d="M3 11h11v5H3z"/>
+              <path fill="#ff7424" d="M2 11h2v5H2zM13 11h2v5h-2z"/>
+              <path fill="#ffcc3d" d="M8 12h2v2H8zM6 12h2v1H6z"/>
+            </svg>
+          </div>
+          <div class="hero-bars">
+            <div class="bar-label is-health"><span>HERO HEALTH</span><span id="hero-health-text">100 / 100</span></div>
+            <span class="bar"><progress id="hero-health" max="100" value="100" aria-label="Hero health"></progress></span>
+            <div class="bar-label is-power"><span>HERO POWER</span><span id="hero-power-text">100 / 100</span></div>
+            <span class="bar"><progress id="hero-power" max="100" value="100" aria-label="Hero power"></progress></span>
+          </div>
+        </section>
+        <section id="tutorial" class="hud-panel objectives" role="status" aria-live="polite" aria-label="Objectives">
+          <span class="hud-title">OBJECTIVES</span>
+          <strong class="objective-main"><span class="objective-name">Learn your powers</span> <span class="tutorial-count"></span></strong>
+          <ol class="objective-steps"></ol>
+          <div class="tutorial-prompt"></div>
+          <span class="tutorial-bar" aria-hidden="true"><i></i></span>
+        </section>
+      </div>
+      <div id="status-hud" class="status-hud"></div>
+      <div id="defeat-panel" class="pause-menu defeat-panel" role="alertdialog" aria-labelledby="defeat-title" hidden>
+        <span class="hud-title">CITY RESPONSE</span>
+        <h2 id="defeat-title">Hero down <small>Get back in the fight</small></h2>
+        <button id="defeat-revive" type="button">Revive <span class="defeat-perk">30s invincible</span> <span class="defeat-price">Free</span></button>
+        <button id="defeat-retry" type="button">Retry level</button>
+      </div>
+      <button id="pause-button" class="hud-panel pause-button" type="button" aria-label="Pause (Esc)" aria-haspopup="dialog"><i></i><i></i></button>
+      <dialog id="pause-menu" class="pause-menu" aria-labelledby="pause-title">
+        <span class="hud-title">PAUSED</span>
+        <h2 id="pause-title"><span id="region-name">Green City</span> <small id="country-name">Meadowland</small></h2>
+        <button id="pause-resume" type="button">Resume <kbd>Esc</kbd></button>
+        <button id="open-world-map" type="button">Main menu <kbd>M</kbd></button>
+        <fieldset class="pause-audio">
+          <legend>Sound</legend>
+          <label for="music-volume">Music <output id="music-volume-value" for="music-volume">100%</output></label>
+          <input id="music-volume" type="range" min="0" max="100" step="1" value="100">
+          <label for="sfx-volume">Sound effects <output id="sfx-volume-value" for="sfx-volume">100%</output></label>
+          <input id="sfx-volume" type="range" min="0" max="100" step="1" value="100">
+          <button id="mute-all" type="button" aria-pressed="false">Mute all</button>
+        </fieldset>
+      </dialog>
+      <dialog id="leave-confirm" class="pause-menu" aria-labelledby="leave-title" aria-describedby="leave-text">
+        <span class="hud-title">MAIN MENU</span>
+        <h2 id="leave-title">Leave the run?</h2>
+        <p id="leave-text" class="pause-warning">Your progress will be lost.</p>
+        <button id="leave-yes" type="button">Leave <kbd>M</kbd></button>
+        <button id="leave-no" type="button">Stay <kbd>Esc</kbd></button>
+      </dialog>
+      <dialog id="world-map" class="world-map" aria-labelledby="world-map-title">
+        <header class="world-map-header">
+          <div><span class="eyebrow">PSYCHO HERO / ATLAS</span><h1 id="world-map-title">World map</h1></div>
+          <button id="close-world-map" type="button" aria-label="Close world map">Back to flight <kbd>Esc</kbd><span aria-hidden="true">×</span></button>
+        </header>
+        <div class="world-map-content">
+          <div class="world-map-globe">
+            <svg id="expanded-planet-map" viewBox="0 0 300 300" role="img" aria-label="Full globe with your position on the actual terrain"></svg>
+            <p>ONE SMALL PLANET. ONE BIG LOOP.</p>
+          </div>
+          <section class="world-map-profile" aria-label="Equatorial terrain breakdown">
+            <div class="world-map-profile-heading"><span>◎ WORLD MAP</span><span>EQUATOR / FULL LOOP</span></div>
+            <div class="world-map-profile-location"><h2 id="atlas-region-name">Green City</h2><span id="atlas-country-name">Meadowland</span></div>
+            <svg id="planet-profile" viewBox="0 0 640 222" role="img" aria-label="Terrain profile of the full equatorial loop, with countries, major cities, and your position"></svg>
+            <div class="world-map-profile-key"><span><i class="map-key-hero" aria-hidden="true"></i> You</span><span><i class="map-key-land" aria-hidden="true"></i> Land</span><span><i class="map-key-water" aria-hidden="true"></i> Water</span><span class="map-loop">↻ Edges connect</span></div>
+          </section>
+        </div>
+        <p class="world-map-footer">Gold marks your position · Terrain follows the world beneath your feet</p>
+      </dialog>
+    </main>
+    <script src="./phaser.min.js"></script>
+    <script type="module">
+      import { startGame } from './hero-movement.js';
+      import { FreeRoam } from './free-roam.js';
+      import { poki } from './poki.js';
+      await poki.init();
+      startGame(FreeRoam);
+    </script>
+  </body>
+</html>
