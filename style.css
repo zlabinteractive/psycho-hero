@@ -599,3 +599,11 @@ h1 span{color:#ffd96b}
   .menu-start b{font-size:18px}
   .pause-menu.level-map-panel .menu-settings{min-height:36px;bottom:max(8px,env(safe-area-inset-bottom))}
 }
+
+/* Page loader over the HUD until the first game frame (poki.setPlaying removes it). */
+.loader{position:fixed;inset:0;z-index:100;display:grid;place-content:center;justify-items:center;gap:18px;background:#101a30}
+.loader b{color:#ffcc3d;font:clamp(32px,7vw,56px)/1 'Lilita One','Space Grotesk',sans-serif;letter-spacing:.03em;text-shadow:0 4px 0 #0b1020}
+.loader i{width:min(220px,60vw);height:8px;border-radius:4px;background:linear-gradient(90deg,transparent,#3fd8ff,transparent) 0 0/40% 100% no-repeat #16203a;animation:loader-sweep 1s linear infinite}
+@keyframes loader-sweep{from{background-position:-100% 0}to{background-position:200% 0}}
+/* Menus live inside .stage-wrap's stacking context, under the touch pads: hide the pads while one is open. */
+body:has(.level-map-modal:not([hidden]),.defeat-panel:not([hidden])) .touch-controls{display:none}

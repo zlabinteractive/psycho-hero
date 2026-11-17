@@ -29,10 +29,11 @@ export const poki = {
   },
 
   // Called every frame with whether the player is in play. The first call ends loading (the game
-  // is up and interactive); after that only changes reach the SDK.
+  // is up and interactive) and removes the page loader; after that only changes reach the SDK.
   setPlaying(on) {
     if (!loaded) {
       loaded = true;
+      globalThis.document?.getElementById('loader')?.remove();
       call(s => s.gameLoadingFinished());
     }
     if (on === playing) return;
